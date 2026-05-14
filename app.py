@@ -46,6 +46,7 @@ def scraper_offres(domaine, ville):
             response = requests.get(site, timeout=10)
             soup = BeautifulSoup(response.text, 'html.parser')
             cards = soup.find_all('div', class_='group/card')
+            print(f"Cartes trouvées sur {site} : {len(cards)}")
 
             for card in cards:
                 titre_tag = card.find('span', class_='align-middle')
