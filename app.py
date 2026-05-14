@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import requests
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -31,25 +32,38 @@ def sauvegarder_candidat(prenom, email, domaine, ville):
         json.dump(candidats, f, indent=4)
 
 SITES = [
-    #"https://www.emploi.bj/",
-    #"https://www.jobinbenin.com/",
+    "https://www.emploi.bj/",
+    "https://www.jobinbenin.com/",
     "https://www.afriquetravail.com/",
     ]
 import cloudscraper
 from bs4 import BeautifulSoup
 def scraper_offres(domaine, ville):
-    offres_fictives = [
-        {'titre': 'Développeur web', 'ville': 'Cotonou', 'site': 'emploi.bj'},
-        {'titre': 'Comptable', 'ville': 'Porto-Novo', 'site': 'emploi.bj'},
-        {'titre': 'Développeur Python', 'ville': 'Parakou', 'site': 'emploi.bj'},
-        {'titre': 'Infirmier', 'ville': 'Cotonou', 'site': 'jobinbenin.com'},
-        {'titre': 'Charge Makerting', 'ville': 'Parakou', 'site': 'jobinbenin.com'},
-        {'titre': 'Ingénieur Informatique', 'ville': 'Cotonou', 'site': 'emploi.bj'}
-    ]
-    offres = [
-        offre for offre in offres_fictives
-        if domaine.lower() in offre['titre'].lower() and ville.lower() in offre['ville'].lower()
-    ]
+    offres = []
+
+    for site in SITES:
+        try:
+            response = requests.get(site, timeout=10)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            cards = soup.find_all('div', class_='group/card')
+
+            for card in cards:
+                titre_tag = card.find('span', class_='align-middle')
+                ville_tag = card.find('span', class_='truncate')
+
+                if titre_tag and ville_tag:
+                    titre = titre_tag.text.strip()
+                    ville_offre = ville_tag.text.strip()
+
+                    if domaine.lower() in titre.lower() and ville.lower() in ville_offre.lower():
+                        offres.append({
+                            'titre': titre,
+                            'ville': ville_offre,
+                            'site': site
+                        })
+        except Exception as e:
+            print(f"Erreur sur {site} : {e}")
+
     return offres
 
 def envoyer_email(destinataire, prenom, domaine, ville, offres):
@@ -127,37 +141,17 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 """
-scraper = cloudscraper.create_scraper()
-    offres = []
-    headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
-    for site in SITES:
-        try:
-            response = scraper.get(site, headers= headers, timeout=30)
-            print(f"Status pour {site}: {response.status_code}")
-
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            print(f"Titre de la page : {soup.title.string}")
-
-            print("Aperçu du code reçu :", response.text[:1000])
-            
-            cards = soup.select('div[class*="group/card"]')
-            print(f"Nombre de cartes trouvées: {len(cards)}")
-            for card in cards:
-                img_tag = card.find('img')
-                titre = img_tag.get('alt', '').strip() if img_tag else "Titre inconnu"
-                info_section = card.find('span', class_='truncate')
-                ville_offre = info_section.get_text(strip=True) if info_section else "Bénin"
-
-                if domaine.lower() in titre.lower() and ville.lower() in ville_offre.lower():
-                    offres.append({
-                        'titre': titre,
-                        'ville': ville_offre,
-                        'site': site
-                    })
-        except Exception as e:
-            print(f"Erreur sur {site} : {e}")
+offres_fictives = [
+        {'titre': 'Développeur web', 'ville': 'Cotonou', 'site': 'emploi.bj'},
+        {'titre': 'Comptable', 'ville': 'Porto-Novo', 'site': 'emploi.bj'},
+        {'titre': 'Développeur Python', 'ville': 'Parakou', 'site': 'emploi.bj'},
+        {'titre': 'Infirmier', 'ville': 'Cotonou', 'site': 'jobinbenin.com'},
+        {'titre': 'Charge Makerting', 'ville': 'Parakou', 'site': 'jobinbenin.com'},
+        {'titre': 'Ingénieur Informatique', 'ville': 'Cotonou', 'site': 'emploi.bj'}
+    ]
+    offres = [
+        offre for offre in offres_fictives
+        if domaine.lower() in offre['titre'].lower() and ville.lower() in offre['ville'].lower()
+    ]
     return offres
 """
