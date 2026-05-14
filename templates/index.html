@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Alert Bénin</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1> Job Alert Bénin</h1>
+        <p>Recevez les offres d'emploi de votre domaine directement dans votre boîte mail.</p>
+
+        <form action="/subscribe" method="POST">
+            <input type="text" name="prenom" placeholder="Votre prénom" required>
+            <input type="email" name="email" placeholder="Votre email" required>
+            <select name="domaine" required>
+                <option value="">--Choisissez votre domaine--</option>
+                <option value="informatique">Informatique</option>
+                <option value="finance">Finance & Comptabilité</option>
+                <option value="sante">Santé</option>
+                <option value="education">Education</option>
+                <option value="makerting">Makerting & Communication</option>
+                <option value="droit">Droit & Justice</option>
+                <option value="agriculture">Agriculture</option>
+                <option value="btp">BTP & Architecture</option>
+                <option value="logistique">Logistique et Transport</option>
+                <option value="rh">Ressources humaines</option>
+            </select>
+            
+            <select name="ville" required>
+                <option value="">--Choisissez votre ville--</option>
+                <option value="cotonou">Cotonou</option>
+                <option value="porto-novo">Porto-Novo</option>
+                <option value="parakou">Parakou</option>
+                <option value="abomey-calavi">Abomey-Calavi</option>
+                <option value="bohicon">Bohicon</option>
+                <option value="natitingou">Natitingou</option>
+                <option value="lokossa">Lokossa</option>
+                <option value="ouidah">Ouidah</option>
+            </select>
+            <button type="submit">S'inscrire aux alertes</button>
+        </form>
+    </div>
+</body>
+</html>
