@@ -56,6 +56,7 @@ def scraper_offres(domaine, ville):
                 for card in cards:
                     titre_tag = card.find('h3')
                     if titre_tag:
+                        print(f"Titre: {titre_tag.text.strip()}")
                         titre = titre_tag.text.strip()
                         lien = titre_tag.find('a')['href'] if titre_tag.find('a') else site
                         if domaine.lower() in titre.lower():
