@@ -15,10 +15,6 @@ MOT_DE_PASSE = os.getenv('MOT_DE_PASSE')
 
 FICHIER_CANDIDATS = "candidats.json"
 
-SITES = [
-    "https://www.emploi.bj/",
-    "https://www.jobinbenin.com/",
-]
 
 def charger_candidats():
     if os.path.exists(FICHIER_CANDIDATS):
@@ -37,6 +33,11 @@ def sauvegarder_candidat(prenom, email, domaine, ville):
     with open(FICHIER_CANDIDATS, 'w') as f:
         json.dump(candidats, f, indent=4)
 
+SITES = [
+    "https://www.emploibenin.com",
+    "https://www.benintalents.com",
+]
+
 def scraper_offres(domaine, ville):
     offres = []
     headers = {
@@ -48,23 +49,32 @@ def scraper_offres(domaine, ville):
             response = requests.get(site, headers=headers, timeout=10)
             print(f"Status {site} : {response.status_code}")
             soup = BeautifulSoup(response.text, 'html.parser')
-            cards = soup.find_all('div', class_='group/card')
-            print(f"Cartes trouvées : {len(cards)}")
 
-            for card in cards:
-                titre_tag = card.find('span', class_='align-middle')
-                ville_tag = card.find('span', class_='truncate')
+            if "emploibenin" in site:
+                cards = soup.find_all('div', class_='last-offers-details')
+                for card in cards:
+                    titre_tag = card.find('h3')
+                    if titre_tag:
+                        titre = titre_tag.text.strip()
+                        lien = titre_tag.find('a')['href'] if titre_tag.find('a') else site
+                        if domaine.lower() in titre.lower():
+                            offres.append({
+                                'titre': titre,
+                                'ville': ville,
+                                'site': lien
+                            })
 
-                if titre_tag and ville_tag:
-                    titre = titre_tag.text.strip()
-                    ville_offre = ville_tag.text.strip()
-
-                    if domaine.lower() in titre.lower() and ville.lower() in ville_offre.lower():
+            elif "benintalents" in site:
+                cards = soup.find_all('h3', class_='text-lg')
+                for card in cards:
+                    titre = card.text.strip()
+                    if domaine.lower() in titre.lower():
                         offres.append({
                             'titre': titre,
-                            'ville': ville_offre,
+                            'ville': ville,
                             'site': site
                         })
+
         except Exception as e:
             print(f"Erreur sur {site} : {e}")
 
