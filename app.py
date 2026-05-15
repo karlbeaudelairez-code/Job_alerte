@@ -52,6 +52,7 @@ def scraper_offres(domaine, ville):
 
             if "emploibenin" in site:
                 cards = soup.find_all('div', class_='last-offers-details')
+                print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
                     titre_tag = card.find('h3')
                     if titre_tag:
@@ -66,6 +67,7 @@ def scraper_offres(domaine, ville):
 
             elif "benintalents" in site:
                 cards = soup.find_all('h3', class_='text-lg')
+                print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
                     titre = card.text.strip()
                     if domaine.lower() in titre.lower():
