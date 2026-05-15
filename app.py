@@ -69,6 +69,9 @@ def scraper_offres(domaine, ville):
                 cards = soup.find_all('h3', class_='text-lg')
                 print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
+                    titre_tag = card.find('h3')
+                    if titre_tag:
+                        print(f"Titre: {titre_tag.text.strip()}")
                     titre = card.text.strip()
                     if domaine.lower() in titre.lower():
                         offres.append({
