@@ -130,8 +130,11 @@ def subscribe():
     offres = scraper_offres(domaine, ville)
 
     if offres:
-        envoyer_email(email, prenom, domaine, ville, offres)
-        message = f"Merci {prenom} ! Les offres ont été envoyées à {email}."
+        try:
+            envoyer_email(email, prenom, domaine, ville, offres)
+            message = f"Merci {prenom} ! Les offres ont été envoyées à {email}."
+        except Exception as e:
+            message = f"Merci {prenom} ! {len(offres)} offre(s) trouvée(s) en {domaine}. Email temporairement indisponible."
     else:
         message = f"Merci {prenom} ! Aucune offre trouvée pour le moment. Vous serez alerté dès qu'une offre sera disponible."
 
