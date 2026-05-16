@@ -103,7 +103,7 @@ def envoyer_email(destinataire, prenom, domaine, ville, offres):
 
         msg.attach(MIMEText(contenu, 'plain'))
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 587) as smtp:
+        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
             smtp.ehlo()
             smtp.starttls()
             smtp.login(EMAIL_EXPEDITEUR, MOT_DE_PASSE)
