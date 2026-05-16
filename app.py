@@ -126,14 +126,15 @@ def subscribe():
     ville = request.form['ville']
 
     sauvegarder_candidat(prenom, email, domaine, ville)
-
-    offres = scraper_offres(domaine, ville)
-
+    try:
+        offres = scraper_offres(domaine, ville)
+    except Exception as e:
+        offres = []
     if offres:
         try:
             envoyer_email(email, prenom, domaine, ville, offres)
-            message = f"Merci {prenom} ! Les offres ont été envoyées à {email}."
         except Exception as e:
+            pass
             message = f"Merci {prenom} ! {len(offres)} offre(s) trouvée(s) en {domaine}. Email temporairement indisponible."
     else:
         message = f"Merci {prenom} ! Aucune offre trouvée pour le moment. Vous serez alerté dès qu'une offre sera disponible."
