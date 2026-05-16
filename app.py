@@ -118,6 +118,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+import threading
 @app.route('/subscribe', methods=['POST'])
 def subscribe():
     prenom = request.form['prenom']
@@ -131,11 +132,12 @@ def subscribe():
     except Exception as e:
         offres = []
     if offres:
-        try:
-            envoyer_email(email, prenom, domaine, ville, offres)
-        except Exception as e:
-            pass
-            message = f"Merci {prenom} ! {len(offres)} offre(s) trouvée(s) en {domaine}. Email temporairement indisponible."
+        thread = threading.Thread(
+            target=envoyer_email, 
+            args=(email, prenom, domaine, ville, offres)
+            )
+        thread.start()
+        message = f"Merci {prenom} ! {len(offres)} offre(s) trouvée(s) en {domaine}. Vous serez alerté paar email."
     else:
         message = f"Merci {prenom} ! Aucune offre trouvée pour le moment. Vous serez alerté dès qu'une offre sera disponible."
 
