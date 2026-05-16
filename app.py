@@ -103,7 +103,9 @@ def envoyer_email(destinataire, prenom, domaine, ville, offres):
 
         msg.attach(MIMEText(contenu, 'plain'))
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 587) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
             smtp.login(EMAIL_EXPEDITEUR, MOT_DE_PASSE)
             smtp.sendmail(EMAIL_EXPEDITEUR, destinataire, msg.as_string())
         print(f"Email envoyé à {destinataire}")
@@ -137,7 +139,7 @@ def subscribe():
             args=(email, prenom, domaine, ville, offres)
             )
         thread.start()
-        message = f"Merci {prenom} ! {len(offres)} offre(s) trouvée(s) en {domaine}. Vous serez alerté paar email."
+        message = f"Merci {prenom} ! {len(offres)} offre(s) trouvée(s) en {domaine}. Vous serez alerté par email à {email}."
     else:
         message = f"Merci {prenom} ! Aucune offre trouvée pour le moment. Vous serez alerté dès qu'une offre sera disponible."
 
