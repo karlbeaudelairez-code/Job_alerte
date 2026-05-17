@@ -86,12 +86,11 @@ def scraper_offres(domaine, ville):
 
     return offres
 
+import resend
+
 def envoyer_email(destinataire, prenom, domaine, ville, offres):
     try:
-        msg = MIMEMultipart()
-        msg['From'] = EMAIL_EXPEDITEUR
-        msg['To'] = destinataire
-        msg['Subject'] = f"Offres d'emploi en {domaine} à {ville}"
+        resend.api_key = os.getenv('RESEND_API_KEY')
 
         contenu = f"Bonjour {prenom},\n\n"
         contenu += f"Voici les offres d'emploi trouvées en {domaine} à {ville} :\n\n"
@@ -101,13 +100,14 @@ def envoyer_email(destinataire, prenom, domaine, ville, offres):
 
         contenu += "\n\nCordialement,\nJob Alert Bénin"
 
-        msg.attach(MIMEText(contenu, 'plain'))
+        params = {
+            "from": "Job Alert Benin <onboarding@resend.dev>",
+            "to": [destinataire],
+            "subject": f"Offres d'emploi en {domaine} à {ville}",
+            "text": contenu,
+        }
 
-        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.login(EMAIL_EXPEDITEUR, MOT_DE_PASSE)
-            smtp.sendmail(EMAIL_EXPEDITEUR, destinataire, msg.as_string())
+        resend.Emails.send(params)
         print(f"Email envoyé à {destinataire}")
         return True
     except Exception as e:
