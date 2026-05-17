@@ -65,8 +65,8 @@ def scraper_offres(domaine):
                                 'site': lien
                             })
 
-            elif "benintalents" in site:
-                cards = soup.find_all('h3', class_='text-lg sm:text-xl font-semibold text-foreground mb-0.5 sm:mb-1 leading-snug sm:leading-tight break-words line-clamp-2 sm:line-clamp-1 text-balance')
+            elif "wabajob" in site:
+                cards = soup.find_all('div', class_='relative')
                 print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
                     titre_tag = card.find('h3')
