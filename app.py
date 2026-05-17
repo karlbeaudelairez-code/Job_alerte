@@ -70,7 +70,7 @@ def scraper_offres(domaine, ville):
                 cards = soup.find_all('h3', class_='text-lg')
                 print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
-                    titre_tag = card.find('a')
+                    titre_tag = card.find('h3')
                     if titre_tag:
                         print(f"Titre: {titre_tag.text.strip()}")
                     titre = card.text.strip()
@@ -91,7 +91,6 @@ import resend
 def envoyer_email(destinataire, prenom, domaine, ville, offres):
     try:
         api_key = os.getenv('RESEND_API_KEY')
-        print(f"Clé API Resend : {api_key[:10] if api_key else 'Non trouvée'}")
         resend.api_key = api_key
 
         contenu = f"Bonjour {prenom},\n\n"
