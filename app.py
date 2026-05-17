@@ -34,7 +34,7 @@ def sauvegarder_candidat(prenom, email, domaine):
 
 SITES = [
     "https://www.emploibenin.com",
-    "https://www.benintalents.com",
+    "https://www.wabajob.com",
     "https://offresdemplois.bj/"
 ]
 
