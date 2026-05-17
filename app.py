@@ -90,7 +90,9 @@ import resend
 
 def envoyer_email(destinataire, prenom, domaine, ville, offres):
     try:
-        resend.api_key = os.getenv('RESEND_API_KEY')
+        api_key = os.getenv('RESEND_API_KEY')
+        print(f"Clé API Resend : {api_key[:10] if api_key else 'Non trouvée'}")
+        resend.api_key = api_key
 
         contenu = f"Bonjour {prenom},\n\n"
         contenu += f"Voici les offres d'emploi trouvées en {domaine} à {ville} :\n\n"
