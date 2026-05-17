@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import json
@@ -31,6 +30,7 @@ def sauvegarder_candidat(prenom, email, domaine):
     })
     with open(FICHIER_CANDIDATS, 'w') as f:
         json.dump(candidats, f, indent=4)
+    print(f"Candidat ajouté avec succès: {prenom} | {email} | {domaine}")
 
 SITES = [
     "https://www.emploibenin.com",
