@@ -22,13 +22,12 @@ def charger_candidats():
             return json.load(f)
     return []
 
-def sauvegarder_candidat(prenom, email, domaine, ville):
+def sauvegarder_candidat(prenom, email, domaine):
     candidats = charger_candidats()
     candidats.append({
         'prenom': prenom,
         'email': email,
-        'domaine': domaine,
-        'ville': ville
+        'domaine': domaine
     })
     with open(FICHIER_CANDIDATS, 'w') as f:
         json.dump(candidats, f, indent=4)
@@ -36,9 +35,10 @@ def sauvegarder_candidat(prenom, email, domaine, ville):
 SITES = [
     "https://www.emploibenin.com",
     "https://www.benintalents.com",
+    "https://offresdemplois.bj/"
 ]
 
-def scraper_offres(domaine, ville):
+def scraper_offres(domaine):
     offres = []
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
@@ -62,12 +62,11 @@ def scraper_offres(domaine, ville):
                         if domaine.lower() in titre.lower():
                             offres.append({
                                 'titre': titre,
-                                'ville': ville,
                                 'site': lien
                             })
 
             elif "benintalents" in site:
-                cards = soup.find_all('h3', class_='text-lg')
+                cards = soup.find_all('h3', attrs={'class': lambda c: c and 'text-lg' in c})
                 print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
                     titre_tag = card.find('h3')
@@ -77,7 +76,20 @@ def scraper_offres(domaine, ville):
                     if domaine.lower() in titre.lower():
                         offres.append({
                             'titre': titre,
-                            'ville': ville,
+                            'site': site
+                        })
+            
+            elif "offresdemplois" in site:
+                cards = soup.find_all('div', class_='jbs-grid-usrs-thumb')
+                print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
+                for card in cards:
+                    titre_tag = card.find('h6')
+                    if titre_tag:
+                        print(f"Titre: {titre_tag.text.strip()}")
+                    titre = card.text.strip()
+                    if domaine.lower() in titre.lower():
+                        offres.append({
+                            'titre': titre,
                             'site': site
                         })
 
@@ -88,23 +100,23 @@ def scraper_offres(domaine, ville):
 
 import resend
 
-def envoyer_email(destinataire, prenom, domaine, ville, offres):
+def envoyer_email(destinataire, prenom, domaine, offres):
     try:
         api_key = os.getenv('RESEND_API_KEY')
         resend.api_key = api_key
 
         contenu = f"Bonjour {prenom},\n\n"
-        contenu += f"Voici les offres d'emploi trouvées en {domaine} à {ville} :\n\n"
+        contenu += f"Voici les offres d'emploi trouvées en {domaine} :\n\n"
 
         for offre in offres:
-            contenu += f"- {offre['titre']} | {offre['ville']} | {offre['site']}\n"
+            contenu += f"- {offre['titre']} | {offre['site']}\n"
 
         contenu += "\n\nCordialement,\nJob Alert Bénin"
 
         params = {
             "from": "Job Alert Benin <onboarding@resend.dev>",
             "to": [destinataire],
-            "subject": f"Offres d'emploi en {domaine} à {ville}",
+            "subject": f"Offres d'emploi en {domaine}.",
             "text": contenu,
         }
 
@@ -127,17 +139,16 @@ def subscribe():
     prenom = request.form['prenom']
     email = request.form['email']
     domaine = request.form['domaine']
-    ville = request.form['ville']
 
-    sauvegarder_candidat(prenom, email, domaine, ville)
+    sauvegarder_candidat(prenom, email, domaine)
     try:
-        offres = scraper_offres(domaine, ville)
+        offres = scraper_offres(domaine)
     except Exception as e:
         offres = []
     if offres:
         thread = threading.Thread(
             target=envoyer_email, 
-            args=(email, prenom, domaine, ville, offres)
+            args=(email, prenom, domaine, offres)
             )
         thread.start()
         message = f"Merci {prenom} ! {len(offres)} offre(s) trouvée(s) en {domaine}. Vous serez alerté par email à {email}."
@@ -151,13 +162,12 @@ def envoyer_alertes_automatiques():
     candidats = charger_candidats()
 
     for candidat in candidats:
-        offres = scraper_offres(candidat['domaine'], candidat['ville'])
+        offres = scraper_offres(candidat['domaine'])
         if offres:
             envoyer_email(
                 candidat['email'],
                 candidat['prenom'],
                 candidat['domaine'],
-                candidat['ville'],
                 offres
             )
             print(f"Alerte envoyée à {candidat['email']}")
