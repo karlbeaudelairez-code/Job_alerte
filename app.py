@@ -52,11 +52,9 @@ def scraper_offres(domaine):
 
             if "emploibenin" in site:
                 cards = soup.find_all('div', class_='last-offers-details')
-                print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
                     titre_tag = card.find('h3')
                     if titre_tag:
-                        print(f"Titre: {titre_tag.text.strip()}")
                         titre = titre_tag.text.strip()
                         lien = titre_tag.find('a')['href'] if titre_tag.find('a') else site
                         if domaine.lower() in titre.lower():
@@ -67,12 +65,10 @@ def scraper_offres(domaine):
 
             elif "wabajob" in site:
                 cards = soup.find_all('div', class_='group relative h-full')
-                print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
                     titre_tag = card.find('h3')
                     if titre_tag:
-                        print(f"Titre: {titre_tag.text.strip()}")
-                    titre = card.text.strip()
+                        titre = titre_tag.text.strip()
                     if domaine.lower() in titre.lower():
                         offres.append({
                             'titre': titre,
@@ -81,12 +77,10 @@ def scraper_offres(domaine):
             
             elif "offresdemplois" in site:
                 cards = soup.find_all('div', class_='jbs-grid-usrs-thumb')
-                print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
                     titre_tag = card.find('h6')
                     if titre_tag:
-                        print(f"Titre: {titre_tag.text.strip()}")
-                    titre = card.text.strip()
+                        titre = titre_tag.text.strip()
                     if domaine.lower() in titre.lower():
                         offres.append({
                             'titre': titre,
@@ -155,7 +149,7 @@ def subscribe():
     else:
         message = f"Merci {prenom} ! Aucune offre trouvée pour le moment. Vous serez alerté dès qu'une offre sera disponible."
 
-    return message
+    return render_template('success.html', message=message)
 
 def envoyer_alertes_automatiques():
     print("Vérification des offres en cours...")
