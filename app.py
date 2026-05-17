@@ -66,10 +66,10 @@ def scraper_offres(domaine):
                             })
 
             elif "wabajob" in site:
-                cards = soup.find_all('div', class_='col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12')
+                cards = soup.find_all('div', class_='group relative h-full')
                 print(f"Nombre d'offres trouvées sur {site} : {len(cards)}")
                 for card in cards:
-                    titre_tag = card.find('h6')
+                    titre_tag = card.find('h3')
                     if titre_tag:
                         print(f"Titre: {titre_tag.text.strip()}")
                     titre = card.text.strip()
