@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
+import psycopg2
 
 load_dotenv()
 EMAIL_EXPEDITEUR = os.getenv('EMAIL_EXPEDITEUR')
@@ -15,23 +16,44 @@ MOT_DE_PASSE = os.getenv('MOT_DE_PASSE')
 FICHIER_CANDIDATS = "candidats.json"
 
 
+def get_db_connection():
+    conn = psycopg2.connect(os.getenv('DATABASE_URL'))
+    return conn
+
+def init_db():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS candidats (
+                id SERIAL PRIMARY KEY,
+                prenom VARCHAR(100),
+                email VARCHAR(100),
+                domaine VARCHAR(100)    
+            )
+    ''')
+    conn.commit()
+    cur.close()
+    conn.close()
+
 def charger_candidats():
-    if os.path.exists(FICHIER_CANDIDATS):
-        with open(FICHIER_CANDIDATS, 'r') as f:
-            return json.load(f)
-    return []
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT prenom, email, domaine FROM candidats')
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [{'prenom': r[0], 'email': r[1], 'domaine': r[2]} for r in rows]
 
 def sauvegarder_candidat(prenom, email, domaine):
-    candidats = charger_candidats()
-    candidats.append({
-        'prenom': prenom,
-        'email': email,
-        'domaine': domaine
-    })
-    with open(FICHIER_CANDIDATS, 'w') as f:
-        json.dump(candidats, f, indent=4)
-    print(f"Candidat ajouté avec succès: {prenom} | {email} | {domaine}")
-
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        'INSERT INTO candidats (prenom, email, domaine) VALUES (%s, %s, %s)', (prenom, email, domaine)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    print(f"Candidat sauvegardé : {prenom}")
 SITES = [
     "https://www.emploibenin.com",
     "https://www.wabajob.com",
@@ -169,6 +191,7 @@ def envoyer_alertes_automatiques():
             print(f"Aucune offre pour {candidat['prenom']}")
 
 if __name__ == '__main__':
+    init_db()
     scheduler = BackgroundScheduler()
     scheduler.add_job(envoyer_alertes_automatiques, 'interval', hours=24)
     scheduler.start()
