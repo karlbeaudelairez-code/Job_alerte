@@ -16,7 +16,7 @@ MOT_DE_PASSE = os.getenv('MOT_DE_PASSE')
 FICHIER_CANDIDATS = "candidats.json"
 
 def get_db_connection():
-    conn = psycopg2.connect("postgresql://postgres:doSTGzamudgzvOXDXxSALhWeuhCpzZlu@autorack.proxy.rlwy.net:10032/railway")
+    conn = psycopg2.connect(os.getenv('DATABASE_URL'))
     return conn
 
 def init_db():
@@ -86,6 +86,7 @@ def scraper_offres(domaine):
 
             elif "wabajob" in site:
                 cards = soup.find_all('div', class_='group relative h-full')
+                print(f"Cartes wabajob: {len(cards)}")
                 for card in cards:
                     titre_tag = card.find('h3')
                     if titre_tag:
@@ -99,10 +100,12 @@ def scraper_offres(domaine):
             
             elif "offresdemplois" in site:
                 cards = soup.find_all('div', class_='jbs-grid-usrs-thumb')
+                print(f"Cartes offres d'emploi: {len(cards)}")
                 for card in cards:
                     titre_tag = card.find('h6')
                     if titre_tag:
                         titre = titre_tag.text.strip()
+                        lien = titre_tag.find('a')['href'] if titre_tag.find('a') else site
                         if domaine.lower() in titre.lower():
                             offres.append({
                                 'titre': titre,
