@@ -143,6 +143,7 @@ def envoyer_email(destinataire, prenom, domaine, offres):
         return False
 
 app = Flask(__name__)
+init_db()
 
 @app.route('/')
 def index():
@@ -190,7 +191,6 @@ def envoyer_alertes_automatiques():
             print(f"Aucune offre pour {candidat['prenom']}")
 
 if __name__ == '__main__':
-    init_db()
     scheduler = BackgroundScheduler()
     scheduler.add_job(envoyer_alertes_automatiques, 'interval', hours=24)
     scheduler.start()
