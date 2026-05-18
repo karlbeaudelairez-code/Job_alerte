@@ -90,11 +90,12 @@ def scraper_offres(domaine):
                     titre_tag = card.find('h3')
                     if titre_tag:
                         titre = titre_tag.text.strip()
-                    if domaine.lower() in titre.lower():
-                        offres.append({
-                            'titre': titre,
-                            'site': site
-                        })
+                        lien = titre_tag.find('a')['href'] if titre_tag.find('a') else site
+                        if domaine.lower() in titre.lower():
+                            offres.append({
+                                'titre': titre,
+                                'site': lien
+                            })
             
             elif "offresdemplois" in site:
                 cards = soup.find_all('div', class_='jbs-grid-usrs-thumb')
@@ -102,11 +103,11 @@ def scraper_offres(domaine):
                     titre_tag = card.find('h6')
                     if titre_tag:
                         titre = titre_tag.text.strip()
-                    if domaine.lower() in titre.lower():
-                        offres.append({
-                            'titre': titre,
-                            'site': site
-                        })
+                        if domaine.lower() in titre.lower():
+                            offres.append({
+                                'titre': titre,
+                                'site': lien
+                            })
 
         except Exception as e:
             print(f"Erreur sur {site} : {e}")
