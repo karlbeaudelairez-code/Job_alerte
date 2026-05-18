@@ -16,7 +16,8 @@ MOT_DE_PASSE = os.getenv('MOT_DE_PASSE')
 FICHIER_CANDIDATS = "candidats.json"
 
 def get_db_connection():
-    conn = psycopg2.connect(os.getenv('DATABASE_URL'))
+    url = os.getenv('DATABASE_URL').replace('postgresql://', 'postgres://')
+    conn = psycopg2.connect(url)
     return conn
 
 def init_db():
