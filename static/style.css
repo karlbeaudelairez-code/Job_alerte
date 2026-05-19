@@ -57,6 +57,12 @@ h1 {
     font-size: 14px;
 }
 
+.header-actions  {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
 .desinsc button:hover {
     background-color: #990000;
 }
