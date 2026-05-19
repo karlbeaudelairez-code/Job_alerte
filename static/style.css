@@ -28,6 +28,19 @@ h1 {
     margin-bottom: 10px;
 }
 
+.ins {
+    text-align: center;
+    color:rgb(128, 0, 255);
+    margin-bottom: 5px;
+    color: black;
+}
+
+.desinsc {
+    text-align: right;
+    color:crimson;
+    margin-bottom: 5px;
+    color: black;
+}
 p {
     text-align: center;
     color: #666;

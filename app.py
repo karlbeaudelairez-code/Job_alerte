@@ -53,6 +53,19 @@ def sauvegarder_candidat(prenom, email, domaine):
     cur.close()
     conn.close()
     print(f"Candidat sauvegardé : {prenom}")
+
+def supprimer_candidat(pre, em, do):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "DELETE FROM candidats WHERE prenom = %s AND email = %s and domaine = %s",
+        (pre, em, do)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    print(f"Candidat supprimé avec succès : {pre}")
+
 SITES = [
     "https://www.emploibenin.com",
     "https://www.wabajob.com",
@@ -176,6 +189,27 @@ def subscribe():
         message = f"Merci {prenom} ! Aucune offre trouvée pour le moment. Vous serez alerté dès qu'une offre sera disponible."
 
     return render_template('success.html', message=message)
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    prenom = request.form['prenom']
+    email = request.form['email']
+    domaine = request.form['domaine']
+
+    candidats = charger_candidats()
+    candidat_trouve = False
+    for candidat in candidats:
+        if candidat['prenom'] == prenom and candidat['email'] == email and candidat['domaine'] == domaine:
+            candidat_trouve = True
+            break
+    if candidat_trouve:
+        supprimer_candidat(prenom, email, domaine)
+        message = f"{prenom}, Merci pour votre fidélité !"
+    else:
+        message = f"Candidat introuvable : {prenom}"
+        print(f"Candidat introuvable : {prenom}")
+    return render_template('successlogout.html', message=message)
+    
 
 def envoyer_alertes_automatiques():
     print("Vérification des offres en cours...")

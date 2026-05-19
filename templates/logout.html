@@ -3,25 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Alert Bénin</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css') }}">
+    <title>Désinscription - Job Alert Bénin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1> Job Alert Bénin </h1>
-        <div class="ins">
-            <h2> Inscription </h2>
-        </div>
-        <div class="desinsc">
-            <a href="/logout">
-                <button type="button">Se désinscrire</button>
-            </a>
-        </div>
-        <p>Recevez les offres d'emploi de votre domaine directement dans votre boîte mail.</p>
-
-        <form action="/subscribe" method="POST">
+        <form action="/logout" method="POST">
             <input type="text" name="prenom" placeholder="Votre prénom" required>
-            <input type="email" name="email" placeholder="Votre email" required>
+            <input type="text" name="email" placeholder="Votre email" required>
             <select name="domaine" required>
                 <option value="">--Choisissez votre domaine--</option>
                 <option value="enseignant">Education</option>
@@ -47,8 +36,7 @@
                 <option value="developer">Informatique</option>
                 <option value="ingénieur">Ingénierie</option>
             </select>
-            
-            <button type="submit">S'inscrire aux alertes</button>
+            <button type="submit">Se désinscrire</button>
         </form>
     </div>
 </body>
