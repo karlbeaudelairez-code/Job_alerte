@@ -41,6 +41,25 @@ h1 {
     margin-bottom: 5px;
     color: black;
 }
+.desinsc {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.desinsc button {
+    background-color: #cc0000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.desinsc button:hover {
+    background-color: #990000;
+}
 p {
     text-align: center;
     color: #666;

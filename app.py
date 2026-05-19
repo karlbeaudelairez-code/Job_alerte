@@ -190,8 +190,10 @@ def subscribe():
 
     return render_template('success.html', message=message)
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
+    if request.method == 'GET':
+        return render_template('logout.html')
     prenom = request.form['prenom']
     email = request.form['email']
     domaine = request.form['domaine']
