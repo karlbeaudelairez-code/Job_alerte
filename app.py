@@ -136,7 +136,7 @@ def envoyer_email(destinataire, prenom, domaine, offres):
     try:
         api_key = os.getenv('BREVO_API_KEY')
         print(f"Clé Brevo : {api_key[:10] if api_key else 'NON TROUVÉE'}")
-        
+        print(f"Toutes les variables : {list(os.environ.keys())}")
         configuration = sib_api_v3_sdk.Configuration()
         configuration.api_key['api-key'] = api_key
 
