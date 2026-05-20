@@ -129,13 +129,17 @@ def scraper_offres(domaine):
             print(f"Erreur sur {site} : {e}")
 
     return offres
-
-import resend
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 
 def envoyer_email(destinataire, prenom, domaine, offres):
     try:
-        api_key = os.getenv('RESEND_API_KEY')
-        resend.api_key = api_key
+        configuration = sib_api_v3_sdk.Configuration()
+        configuration.api_key['api-key'] = os.getenv('BREVO_API_KEY')
+
+        api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
+            sib_api_v3_sdk.ApiClient(configuration)
+        )
 
         contenu = f"Bonjour {prenom},\n\n"
         contenu += f"Voici les offres d'emploi trouvées en {domaine} :\n\n"
@@ -145,17 +149,17 @@ def envoyer_email(destinataire, prenom, domaine, offres):
 
         contenu += "\n\nCordialement,\nJob Alert Bénin"
 
-        params = {
-            "from": "Job Alert Benin <onboarding@resend.dev>",
-            "to": [destinataire],
-            "subject": f"Offres d'emploi en {domaine}.",
-            "text": contenu,
-        }
+        email = sib_api_v3_sdk.SendSmtpEmail(
+            to=[{"email": destinataire, "name": prenom}],
+            sender={"email": "jobalertbeninbz@gmail.com", "name": "Job Alert Bénin"},
+            subject=f"Offres d'emploi en {domaine}",
+            text_content=contenu
+        )
 
-        resend.Emails.send(params)
+        api_instance.send_transac_email(email)
         print(f"Email envoyé à {destinataire}")
         return True
-    except Exception as e:
+    except ApiException as e:
         print(f"Erreur email : {e}")
         return False
 
