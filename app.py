@@ -12,7 +12,7 @@ import psycopg2
 load_dotenv()
 EMAIL_EXPEDITEUR = os.getenv('EMAIL_EXPEDITEUR')
 MOT_DE_PASSE = os.getenv('MOT_DE_PASSE')
-BREVO_API_KEY = os.getenv('BREVO_API_KEY')
+BREVO_API_KEY = os.getenv('BREVO')
 
 FICHIER_CANDIDATS = "candidats.json"
 
