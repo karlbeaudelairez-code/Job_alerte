@@ -12,6 +12,7 @@ import psycopg2
 load_dotenv()
 EMAIL_EXPEDITEUR = os.getenv('EMAIL_EXPEDITEUR')
 MOT_DE_PASSE = os.getenv('MOT_DE_PASSE')
+BREVO_API_KEY = os.getenv('BREVO_API_KEY')
 
 FICHIER_CANDIDATS = "candidats.json"
 
@@ -134,11 +135,9 @@ from sib_api_v3_sdk.rest import ApiException
 
 def envoyer_email(destinataire, prenom, domaine, offres):
     try:
-        api_key = os.getenv('BREVO_API_KEY')
-        print(f"Clé Brevo : {api_key[:10] if api_key else 'NON TROUVÉE'}")
         print(f"Toutes les variables : {list(os.environ.keys())}")
         configuration = sib_api_v3_sdk.Configuration()
-        configuration.api_key['api-key'] = api_key
+        configuration.api_key['api-key'] = BREVO_API_KEY
 
         api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
             sib_api_v3_sdk.ApiClient(configuration)
