@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Désinscription - Job Alert Bénin</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <form action="/logout" method="POST">
+    <div class="container" style="text-align: center;">
+        <h1>Job Alert Bénin</h1>
+        <h2>Se désinscrire</h2>
+        <p>Entrez vos informations pour vous désinscrire des alertes emploi.</p>
+
+        <form action="logout.php" method="POST">
             <input type="text" name="prenom" placeholder="Votre prénom" required>
-            <input type="text" name="email" placeholder="Votre email" required>
+            <input type="email" name="email" placeholder="Votre email" required>
             <select name="domaine" required>
                 <option value="">--Choisissez votre domaine--</option>
                 <option value="enseignant">Education</option>
-                <option value="infirmier">Infimérie</option>
+                <option value="infirmier">Infirmerie</option>
                 <option value="pharmaceutique">Pharmacie</option>
                 <option value="psychologue">Psychologie</option>
                 <option value="cuisinier">Hôtellerie & Restauration</option>
@@ -27,17 +31,28 @@
                 <option value="comptable">Finance & Comptabilité</option>
                 <option value="ressources humaines">Ressources humaines</option>
                 <option value="commercial">Commerce</option>
-                <option value="makerting">Makerting & Communication</option>
+                <option value="markerting">Marketing & Communication</option>
                 <option value="droit">Droit & Justice</option>
                 <option value="sécurité">Administrateur Réseaux & Sécurité</option>
                 <option value="community manager">Community Manager</option>
                 <option value="graphiste">Graphisme</option>
                 <option value="design">Design</option>
-                <option value="developer">Informatique</option>
+                <option value="informatique">Informatique</option>
                 <option value="ingénieur">Ingénierie</option>
             </select>
-            <button type="submit">Se désinscrire</button>
+            <button type="submit" style="background-color: #cc0000;">Se désinscrire</button>
         </form>
+
+        <br>
+        <a href="index.html"
+        style="
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #008751;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        ">← Retour à l'accueil</a>
     </div>
 </body>
 </html>

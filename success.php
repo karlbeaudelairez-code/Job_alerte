@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Désinscription réussie - Job Alert Bénin</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Inscription réussie - Job Alert Bénin</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container" style="text-align: center;">
         <div style="font-size: 60px;">🎉</div>
-        <h1 style="color: #008751;">Désinscription réussie !</h1>
-        <p>{{ message }}</p>
+        <h1 style="color: #008751;">Inscription réussie !</h1>
+        <p><?= htmlspecialchars($_GET['message'] ?? '') ?></p>
         <br>
-        <a href="/" style="
+        <a href="index.php" style="
             display: inline-block;
             padding: 12px 30px;
             background-color: #008751;
